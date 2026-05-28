@@ -1,0 +1,62 @@
+// ============================================
+// Schéma La Literie Idéale - dbdiagram.io
+// Projet Algo & BDD - MSc2 Data Marketing
+// ============================================
+
+Table magasins {
+  id_magasin int [pk]
+  nom varchar [not null]
+  adresse varchar [not null]
+  ville varchar [not null]
+  code_postal varchar [not null]
+}
+
+Table clients {
+  id_client int [pk, increment]
+  prenom varchar [not null]
+  nom varchar [not null]
+  adresse varchar
+  ville varchar
+  code_postal varchar
+  id_magasin int [not null, ref: > magasins.id_magasin]
+}
+
+Table produits {
+  id_produit int [pk, increment]
+  nom varchar [not null]
+  categorie varchar [not null]
+  marque varchar
+  prix decimal [not null]
+}
+
+Table commandes {
+  id_commande int [pk, increment]
+  id_client int [not null, ref: > clients.id_client]
+  id_magasin int [not null, ref: > magasins.id_magasin]
+  date_commande date [not null]
+  montant_total decimal [not null]
+}
+
+Table commandes_produits {
+  id_commande int [not null, ref: > commandes.id_commande]
+  id_produit int [not null, ref: > produits.id_produit]
+  quantite int [not null, default: 1]
+
+  indexes {
+    (id_commande, id_produit) [pk]
+  }
+}
+
+Table clients_rfm {
+  id_client int [pk, ref: > clients.id_client]
+  recence int
+  frequence int
+  montant decimal
+  score_r int
+  score_f int
+  score_m int
+  score_rfm int
+  segment varchar
+  latitude decimal
+  longitude decimal
+}

@@ -1,0 +1,88 @@
+// E-Commerce Marketing — Schéma BDD
+// Coller sur https://dbdiagram.io pour visualiser
+
+Table clients {
+  client_id        int          [pk, increment]
+  nom              varchar(100) [not null]
+  email            varchar(150) [not null, unique]
+  ville            varchar(100) [not null]
+  pays             varchar(50)  [not null, default: 'France']
+  devise           varchar(10)  [not null, default: 'EUR']
+  date_inscription date         [not null]
+}
+
+Table categories {
+  categorie_id  int          [pk, increment]
+  nom           varchar(100) [not null]
+  description   text
+}
+
+Table produits {
+  produit_id    int           [pk, increment]
+  nom           varchar(200)  [not null]
+  categorie_id  int           [not null, ref: > categories.categorie_id]
+  prix_ht       decimal(10,2) [not null]
+  stock         int           [not null, default: 0]
+}
+
+Table commandes {
+  commande_id   int           [pk, increment]
+  client_id     int           [not null, ref: > clients.client_id]
+  date_commande date          [not null]
+  statut        varchar(20)   [not null, default: 'en_cours']
+  montant_total decimal(10,2) [not null]
+}
+
+Table lignes_commande {
+  ligne_id      int           [pk, increment]
+  commande_id   int           [not null, ref: > commandes.commande_id]
+  produit_id    int           [not null, ref: > produits.produit_id]
+  quantite      int           [not null, default: 1]
+  prix_unitaire decimal(10,2) [not null]
+}
+
+Table campagnes {
+  campagne_id   int           [pk, increment]
+  nom           varchar(150)  [not null]
+  type_campagne varchar(20)   [not null]
+  date_debut    date          [not null]
+  date_fin      date          [not null]
+  budget        decimal(10,2)
+}
+
+// Many-to-Many : clients <-> campagnes
+Table campagnes_clients {
+  campagne_id  int       [ref: > campagnes.campagne_id]
+  client_id    int       [ref: > clients.client_id]
+  ouvert       tinyint   [not null, default: 0]
+  clique       tinyint   [not null, default: 0]
+  converti     tinyint   [not null, default: 0]
+
+  indexes {
+    (campagne_id, client_id) [pk]
+  }
+}
+
+Table avis {
+  avis_id     int   [pk, increment]
+  client_id   int   [not null, ref: > clients.client_id]
+  produit_id  int   [not null, ref: > produits.produit_id]
+  note        int   [not null]
+  commentaire text
+  date_avis   date  [not null]
+}
+
+Table rfm_segments {
+  client_id     int           [pk, ref: > clients.client_id]
+  recence_j     int           [not null]
+  frequence     int           [not null]
+  montant_total decimal(10,2) [not null]
+  score_r       tinyint       [not null]
+  score_f       tinyint       [not null]
+  score_m       tinyint       [not null]
+  score_total   tinyint       [not null]
+  segment       varchar(50)   [not null]
+  date_calcul   date          [not null]
+  taux_change   float
+  montant_eur   decimal(10,2)
+}
