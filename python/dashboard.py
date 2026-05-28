@@ -62,7 +62,7 @@ import pandas as pd
 conn = mysql.connector.connect(
     host="localhost",
     user="root",
-    password="<votre-mot-de-passe>",
+    password="azerty97",
     database="ecommerce_rfm"
 )
 
