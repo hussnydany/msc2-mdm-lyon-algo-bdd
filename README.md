@@ -1,4 +1,4 @@
-# Algo & BDD - Séances 3 et 4
+# Algo & BDD
 
 ## Mise en place
 
